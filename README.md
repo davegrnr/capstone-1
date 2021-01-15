@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Capstone-1
 
 # Project Objective:
