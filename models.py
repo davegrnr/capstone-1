@@ -52,6 +52,8 @@ class User(db.Model):
         nullable=False,
     )
 
+    
+
     @classmethod
     def signup(cls, username, email, password, image_url):
         """Sign up user.
@@ -90,6 +92,39 @@ class User(db.Model):
                 return user
 
         return False
+
+class SavedJob(db.Model):
+    """A job saved for later viewing"""
+
+    __tablename__ = 'saved_jobs'
+
+    id = db.Column(
+        db.Integer, 
+        primary_key=True,
+    )
+
+    title = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+    description = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+    location = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable = False
+    )
+
+    user = db.relationship('User')
 
 def connect_db(app):
     """Connect this database to provided Flask app.

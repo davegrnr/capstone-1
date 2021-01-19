@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card align-items-center">
+
+    <h1>{{ g.user.username }}</h1>
+
+        <h3>Email: {{ g.user.email }}</h3>
+        <h3>Location: {{ g.user.location }}</h3>
+        <h3>Bio: {{ g.user.bio }}</h3>
+
+
+    <a href="/users/{{ g.user.id }}/edit" class="btn btn-primary">Edit Info</a>
+</div>
+
+
+
+{% endblock %}
+
+<!-- <ul>
+    <li>
+        {{ g.user.email }}
+    </li>
+</ul>    -->

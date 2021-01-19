@@ -1,11 +1,11 @@
 import os
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from models import db, connect_db, User
-from forms import UserAddForm, LoginForm 
+from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
 
 CURR_USER_KEY = "curr_user"
 
@@ -36,7 +36,10 @@ def homepage():
     logged in: display saved jobs
     """
 
-    return render_template('base.html')
+    # if g.user:
+    #     job_ids = [j.id for j in g.user.]
+
+    return render_template('home.html')
 
 ###############################################################
 # User signup/login/logout
@@ -126,3 +129,59 @@ def logout():
     do_logout()
     flash(f"You are now logged out!", "success")
     return redirect('/')
+
+################################################################
+#Search Route
+
+@app.route('/search', methods=["GET", "POST"])
+def search_jobs():
+    if not g.user:
+        flash("Please login or sign up first.")
+        return redirect('/signup')
+
+    user = g.user
+    form = SearchJobsForm()
+
+    if form.validate_on_submit():
+        category = form.category.data
+        search_term = form.search_term.data
+        company_name = form.company_name.data
+        return
+    return render_template('/search.html', form=form)
+
+
+################################################################
+#User routes
+
+@app.route('/users/<int:user_id>')
+def show_user_page(user_id):
+    """Display user profile"""
+
+    user=User.query.get_or_404(user_id)
+
+    
+    return render_template('/users/show.html', user=user)
+
+@app.route('/users/<int:user_id>/edit', methods=["GET", "POST"])
+def edit_user(user_id):
+    """Edit user profile. If Unauthorized, redirect"""
+
+    if not g.user:
+        flash("Access denied.", "danger")
+
+    user = g.user
+    form = EditUserForm(obj=user)
+
+    if form.validate_on_submit():
+        if User.authenticate(user.username, form.password.data):
+            user.username = form.username.data
+            user.email = form.email.data
+            user.location = form.location.data
+            user.bio = form.bio.data
+
+            db.session.commit()
+            return redirect(f"/users/{user.id}")
+
+        flash("Invalid password, please try again", 'danger')
+
+    return render_template('/users/edit.html', form=form, user_id=user.id, user=user)
