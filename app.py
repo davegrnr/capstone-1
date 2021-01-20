@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+import requests
 
 from models import db, connect_db, User
 from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
@@ -141,13 +142,19 @@ def search_jobs():
 
     user = g.user
     form = SearchJobsForm()
+    
+    # if form.validate_on_submit():
+    search = form.search_term.data #trim! > Store to variable and go to logic
+    category = request.args.get('category')
+    company_name = form.company_name.data
+    response = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=25")
+    json_data = jsonify(json.loads(response.text))
+        # if optional params are None, don't pass to query
 
-    if form.validate_on_submit():
-        category = form.category.data
-        search_term = form.search_term.data
-        company_name = form.company_name.data
-        return
-    return render_template('/search.html', form=form)
+
+    # return render_template('/search.html', form=form, response=response)
+    return json_data
+
 
 
 ################################################################
