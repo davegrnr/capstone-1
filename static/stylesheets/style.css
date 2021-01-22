@@ -180,6 +180,14 @@ nav + .container {
 	box-shadow: 0 1px 1px rgba(136, 153, 166, 0.15);
 }
 
+#job-header {
+	text-decoration: underline;
+}
+
+#location-text {
+	font-style: italic;
+}
+
 .timeline-image {
 	border-radius: 48px;
 	height: 48px;

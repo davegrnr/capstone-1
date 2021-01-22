@@ -3,7 +3,7 @@
 
 <div class="row justify-content-md-center">
     <div class="col-md-7 col-lg-5">
-      <h2 class="join-message">Search for Jobs</h2>
+      <h2 class="h2">Search for Jobs</h2>
       <form method="POST" id="job_search_form">
         
         <!-- *********LIST INFO FOR  -->
@@ -15,12 +15,36 @@
             <span class="text-danger">{{ error }}</span>
           {% endfor %}
           {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
-
-    </ul>
-        <button class="btn btn-primary btn-lg btn-block">Search!</button>
+        {% endfor %}  
+        <button class="btn btn-primary btn-lg btn-block mb-20">Search!</button>
       </form>
+
+  
+        
     </div>
   </div>
+<div class="row">
+  <div class="column mt-2">
+    <div class="row">
+      <ul>
+        {% for job in json_data.jobs %}
+          <li class="list-group-item jobs-list">
+            <span id="job-header" class="h4"> <b>{{ job.title }}  </b> </span>  
+            <btn class="btn"><i class="far fa-star" id="favorite-star" style="color: #063ae6"></i></btn>
+            <br>
+
+            <span id="job-category" class="h5">{{ job.category }}</span>
+            <span id="location-text">{{ job.candidate_required_location }}</span> 
+            
+            
+            <br>
+            <p id="job-description"> {{ job.description }}</p>
+            <p id="company-name">{{ job.company_name }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
 
   {% endblock %}
