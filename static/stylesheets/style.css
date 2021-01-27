@@ -181,7 +181,7 @@ nav + .container {
 }
 
 #job-header {
-	text-decoration: underline;
+	font-weight: bold;
 }
 
 #location-text {

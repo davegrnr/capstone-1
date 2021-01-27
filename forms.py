@@ -37,7 +37,5 @@ class SearchJobsForm(FlaskForm):
     """Form to search jobs"""
     search_term = StringField('(Optional) Search Term')
     category = SelectField('Category', 
-        choices=CATEGORIES,
-        validators=[DataRequired()])
-    
+        choices=CATEGORIES)
     company_name = StringField('(Optional) Company Name')

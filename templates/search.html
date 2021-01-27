@@ -24,25 +24,29 @@
     </div>
   </div>
 <div class="row">
-  <div class="column mt-2">
+  <div class="column mt-2" id="search-results">
     <div class="row">
-      <ul>
-        {% for job in json_data.jobs %}
-          <li class="list-group-item jobs-list">
-            <span id="job-header" class="h4"> <b>{{ job.title }}  </b> </span>  
-            <btn class="btn"><i class="far fa-star" id="favorite-star" style="color: #063ae6"></i></btn>
-            <br>
+      <section class="jobs-container">
+        <ul>
+          {% for job in json_data.jobs %}
+            <li class="list-group-item jobs-list not-saved" id="{{ job.id }}">
+              <span id="job-header" class="h4"> <a href="{{ job.url }}"><b>{{ job.title }}  </b> </span></a>
 
-            <span id="job-category" class="h5">{{ job.category }}</span>
-            <span id="location-text">{{ job.candidate_required_location }}</span> 
-            
-            
-            <br>
-            <p id="job-description"> {{ job.description }}</p>
-            <p id="company-name">{{ job.company_name }}</p>
-          </li>
-        {% endfor %}
-      </ul>
+                <btn class="btn"><i class="far fa-star star" id="star" style="color: #063ae6"></i></btn>
+
+              <br>
+
+              <span id="job-category" class="h5">{{ job.category }}</span>
+              <span id="location-text">{{ job.candidate_required_location }}</span> 
+              <br>
+              <p id="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
+              <br>
+              <p id="job-description"> {{ job.description|safe }}</p>
+              
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
     </div>
   </div>
 </div>

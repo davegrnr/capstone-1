@@ -93,6 +93,8 @@ class User(db.Model):
 
         return False
 
+
+
 class SavedJob(db.Model):
     """A job saved for later viewing"""
 

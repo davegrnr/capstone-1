@@ -26,6 +26,9 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 soup = BeautifulSoup()
+
+
+
 ##############################################################
 # Homepage
 
@@ -133,60 +136,65 @@ def logout():
     return redirect('/')
 
 ################################################################
-#Search Route
+#Search Route, Save Job Route
 
 @app.route('/search', methods=["GET", "POST"])
 def search_jobs():
+    json_data = {}
+
     if not g.user:
         flash("Please login or sign up first.")
         return redirect('/signup')
 
     user = g.user
     form = SearchJobsForm()
-    
-    # if form.validate_on_submit():
-    if form.data['search_term'] and form.data['category'] and form.data['company_name']:
-        search = form.data['search_term']
-        category = form.data['category']
-        company_name = form.data['company_name']
-        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}limit=25").json()
-
-        return render_template('/search.html', form=form, json_data=json_data)
-
-    elif form.data['search_term'] and form.data['category']:
-        search = form.data['search_term']
-        category = form.data['category']
-        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&limit=25").json()
-
-        return render_template('/search.html', form=form, json_data=json_data)
-
-    elif form.data['company_name'] and form.data['category']:
-        company_name= form.data['company_name']
-        category = form.data['category']
-        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&company_name={company_name}&limit=25").json()
-
-        return render_template('/search.html', form=form, json_data=json_data)
-
-    elif form.data['category']:
+   
+    if form.validate_on_submit():
+         # Check for all fields filled out
+        if form.data['search_term'] and form.data['category'] and form.data['company_name']:
+            search = form.data['search_term'].strip()
             category = form.data['category']
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=25").json()
+            company_name = form.data['company_name'].strip()
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}limit=25").json()
+            
 
             return render_template('/search.html', form=form, json_data=json_data)
 
-    else:
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?limit=25").json()
+        # Check if only 'search_term' and 'category'
+        elif form.data['search_term'] and form.data['category']:
+            search = form.data['search_term'].strip()
+            category = form.data['category']
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&limit=25").json()
 
             return render_template('/search.html', form=form, json_data=json_data)
 
+        # Check if only 'company_name' and 'category'
+        elif form.data['company_name'] and form.data['category']:
+            company_name= form.data['company_name'].strip()
+            category = form.data['category']
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&company_name={company_name}&limit=25").json()
+
+            return render_template('/search.html', form=form, json_data=json_data)
+
+        # Check if only 'category'
+        elif form.data['category']:
+                category = form.data['category']
+                json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=25").json()
+
+                return render_template('/search.html', form=form, json_data=json_data)
+
+        # Else return all jobs
+        else:
+                json_data = requests.get(f"https://remotive.io/api/remote-jobs?limit=25").json()
+
+                return render_template('/search.html', form=form, json_data=json_data)
+
+    return render_template('/search.html', form=form, json_data=json_data)
         
-    # search = form.data['search_term'] #trim! > Store to variable and go to logic
-    # category = form.data['category']
-    # company_name = form.data['company_name']
-    # response = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=25").json()
-    # json_data = response
 
-    # return render_template('/search.html', form=form, json_data=json_data)
-
+# @app.route("/users/<int:user_id>/saved-jobs", methods=["GET", "POST"])
+# def save_job(id):
+#     saved_job = 
 
 
 
