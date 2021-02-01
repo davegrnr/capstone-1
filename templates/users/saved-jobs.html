@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="saved-jobs-list">
+    <ul>
+
+                {% for job in saved_jobs %}
+                <li>
+                    <p>{{ job.id }}</p>
+                </li>
+                {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

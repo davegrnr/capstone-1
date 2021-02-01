@@ -105,20 +105,20 @@ class SavedJob(db.Model):
         primary_key=True,
     )
 
-    title = db.Column(
-        db.Text,
-        nullable = False
-    )
+    # title = db.Column(
+    #     db.Text,
+    #     nullable = False
+    # )
 
-    description = db.Column(
-        db.Text,
-        nullable = False
-    )
+    # description = db.Column(
+    #     db.Text,
+    #     nullable = False
+    # )
 
-    location = db.Column(
-        db.Text,
-        nullable = False
-    )
+    # location = db.Column(
+    #     db.Text,
+    #     nullable = False
+    # )
 
     user_id = db.Column(
         db.Integer,
@@ -127,6 +127,17 @@ class SavedJob(db.Model):
     )
 
     user = db.relationship('User')
+
+    def __repr__(self):
+        return f"<SavedJob id {self.id}: User {self.user_id}"
+
+    @classmethod
+    def serialize(self):
+        """Returns a dict of saved job which can be converted to JSON"""
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            }
 
 def connect_db(app):
     """Connect this database to provided Flask app.

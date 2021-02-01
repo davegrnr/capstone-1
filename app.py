@@ -2,11 +2,12 @@ import os
 
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
+from flask_cors import CORS, cross_origin
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
 
-from models import db, connect_db, User
+from models import db, connect_db, User, SavedJob
 from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
 
 CURR_USER_KEY = "curr_user"
@@ -18,6 +19,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgres:///job_locker'))
 
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
@@ -25,6 +27,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "so secret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+cors = CORS(app)
 soup = BeautifulSoup()
 
 
@@ -138,8 +141,9 @@ def logout():
 ################################################################
 #Search Route, Save Job Route
 
-@app.route('/search', methods=["GET", "POST"])
-def search_jobs():
+@app.route('/search/<int:user_id>', methods=["GET", "POST"])
+def search_jobs(user_id):
+    user = User.query.get_or_404(user_id)
     json_data = {}
 
     if not g.user:
@@ -192,9 +196,24 @@ def search_jobs():
     return render_template('/search.html', form=form, json_data=json_data)
         
 
-# @app.route("/users/<int:user_id>/saved-jobs", methods=["GET", "POST"])
-# def save_job(id):
-#     saved_job = 
+@app.route('/api/saved-jobs', methods=["POST"])
+@cross_origin()
+def list_saved_jobs():
+    new_saved_job = SavedJob(id=request.json["saved_job_id"], user_id=request.json["user_id"])
+    db.session.add(new_saved_job)
+    db.session.commit()
+    response_json = jsonify(job=new_saved_job.serialize())
+    return (response_json, 201)
+    
+
+    # data = request.get_json()
+    # return request.data
+
+    # new_saved_job = SavedJob(id=data["saved_job_id"],user_id=data["user_id"])
+    # response_json = jsonify(job=new_saved_job.serialize())
+    # return (response_json, 201)
+
+    
 
 
 
@@ -233,3 +252,10 @@ def edit_user(user_id):
         flash("Invalid password, please try again", 'danger')
 
     return render_template('/users/edit.html', form=form, user_id=user.id, user=user)
+
+@app.route('/users/<int:user_id>/saved-jobs')
+def show_saved_jobs(user_id):
+
+    saved_jobs = SavedJob.query.filter(SavedJob.user_id == user_id).all()
+
+    return render_template('/users/saved-jobs.html', saved_jobs=saved_jobs)
