@@ -105,6 +105,9 @@ class SavedJob(db.Model):
         primary_key=True,
     )
 
+    job_id = db.Column(
+        db.Integer
+    )
 
     job_title = db.Column(
         db.Text,
@@ -130,7 +133,7 @@ class SavedJob(db.Model):
     user = db.relationship('User')
 
     def __repr__(self):
-        return f"<SavedJob id {self.id}: User {self.user_id} Title {self.job_title}"
+        return f"<SavedJob id {self.id}: User {self.user_id} Title {self.job_title} Job ID: {self.job_id}"
 
     @classmethod
     def serialize(self):
@@ -139,6 +142,7 @@ class SavedJob(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'job_title': self.job_title
+            'job_id': self.job_id
             }
 
 def connect_db(app):
