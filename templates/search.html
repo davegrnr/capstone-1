@@ -30,7 +30,7 @@
         <ul>
           {% for job in json_data.jobs %}
             <li class="list-group-item jobs-list not-saved" id="{{ job.id }}">
-              <span id="job-header" class="h4"> <a href="{{ job.url }}"><b>{{ job.title }}  </b> </span></a>
+              <span id="{{ job.title }}" class="h4 job-header"> <a href="{{ job.url }}"><b>{{ job.title }}  </b> </span></a>
 
                 <btn class="btn"><i class="far fa-star star" id="star" style="color: #063ae6"></i></btn>
 

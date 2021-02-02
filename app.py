@@ -152,6 +152,7 @@ def search_jobs(user_id):
 
     user = g.user
     form = SearchJobsForm()
+
    
     if form.validate_on_submit():
          # Check for all fields filled out
@@ -199,7 +200,7 @@ def search_jobs(user_id):
 @app.route('/api/saved-jobs', methods=["POST"])
 @cross_origin()
 def list_saved_jobs():
-    new_saved_job = SavedJob(id=request.json["saved_job_id"], user_id=request.json["user_id"])
+    new_saved_job = SavedJob(id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"])
     db.session.add(new_saved_job)
     db.session.commit()
     response_json = jsonify(job=new_saved_job.serialize())
