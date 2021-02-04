@@ -39,7 +39,7 @@
               <span id="job-category" class="h5">{{ job.category }}</span>
               <span id="location-text">{{ job.candidate_required_location }}</span> 
               <br>
-              <p id="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
+              <p id="{{ job.company_name }}" class="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
               <br>
               <p id="job-description"> {{ job.description|safe }}</p>
               

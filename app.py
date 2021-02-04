@@ -1,6 +1,5 @@
 import os
 
-from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
 from flask_cors import CORS, cross_origin
 from flask_debugtoolbar import DebugToolbarExtension
@@ -28,26 +27,7 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 cors = CORS(app)
-soup = BeautifulSoup()
 
-
-
-##############################################################
-# Homepage
-
-
-@app.route('/')
-def homepage():
-    """Shows homepage:
-
-    not-logged-in: prompt for signup
-    logged in: display saved jobs
-    """
-
-    # if g.user:
-    #     job_ids = [j.id for j in g.user.]
-
-    return render_template('home.html')
 
 ###############################################################
 # User signup/login/logout
@@ -75,6 +55,24 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+##############################################################
+# Homepage
+
+
+@app.route('/')
+def homepage():
+    """Shows homepage:
+
+    not-logged-in: prompt for signup
+    logged in: display saved jobs
+    """
+
+    
+
+    return render_template('home.html')
+
+
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -197,16 +195,33 @@ def search_jobs(user_id):
     return render_template('/search.html', form=form, json_data=json_data)
         
 
-@app.route('/api/saved-jobs', methods=["POST"])
+@app.route('/api/saved-jobs', methods=["POST", "GET", "DELETE"])
 @cross_origin()
 def list_saved_jobs():
-    new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"])
-    db.session.add(new_saved_job)
-    db.session.commit()
-    response_json = jsonify(job=new_saved_job.serialize())
-    return (response_json, 201)
+    exists = db.session.query(db.exists().where(SavedJob.job_id == request.json["saved_job_id"])).scalar() and db.session.query(db.exists().where(SavedJob.user_id == g.user.id)).scalar()
+    new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"])
     
 
+    if exists == False:
+        db.session.add(new_saved_job)
+        db.session.commit()
+        return ('', 201)
+
+    else:
+        saved_job_id=request.json["saved_job_id"]
+        saved_job = SavedJob.query.filter_by(job_id=saved_job_id, user_id=g.user.id).first()
+    
+        db.session.delete(saved_job)
+        db.session.commit()
+        return ('', 200)
+        
+
+        
+    # user_saved_jobs = SavedJob.query.get(g.user.id)
+    # if user_saved_jobs is not None:
+    #     print(user_saved_jobs.job_id for job_id in user_saved_jobs)
+    
+# response_json = jsonify(job=new_saved_job)
     # data = request.get_json()
     # return request.data
 
@@ -260,3 +275,10 @@ def show_saved_jobs(user_id):
     saved_jobs = SavedJob.query.filter(SavedJob.user_id == user_id).all()
 
     return render_template('/users/saved-jobs.html', saved_jobs=saved_jobs)
+
+@app.route('/saved-jobs/<int:saved_job_id>/delete')
+def remove_saved_job(saved_job_id):
+
+
+    job = SavedJob.query.get(saved_job_id)
+

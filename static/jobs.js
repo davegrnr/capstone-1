@@ -1,44 +1,36 @@
 const BASE_URL = "http://127.0.0.1:5000/api";
 
 $(async function(){
-    let savedJob = document.getElementsByClassName('saved')
-    let savedJobsIdArr = []
+    let userId = window.location.pathname.slice(8)
 
-
+    // async function getSavedJobs()
 
     // Update DOM for saving a job
     $(".star").click(async function(e){
         e.preventDefault()
+        // Pulling various data from the DOM 
+        // (Need to revise to save all JSON and pull from that)
         const $tgt = $(e.target)
         const $closestLi = $tgt.closest("li")
         let titleSpan = $closestLi.find('.job-header')
         let $jobTitle = titleSpan.get(0).id
-        console.log($jobTitle)
-        // console.log($jobTitle.get(0).id)
+        let companyNameP = $closestLi.find('.company-name')
+        let companyName = companyNameP.get(0).id
+
+        // Toggle saved job star icon
         $tgt.closest("i").toggleClass("far fas")
         $closestLi.toggleClass("not-saved saved")
         
-
-
         // Find Li parent element ID and save Look for status 200
         let $jobId = (e.target.closest("li").id)
-        let userId = window.location.pathname.slice(8)
+        
 
-        async function saveJob($jobId, userId){
-            const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle});
+        async function saveJob($jobId, userId, $jobTitle){
+            const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName});
+
 
         }
-        saveJob($jobId, userId, $jobTitle)
-
-        // if (savedJobsIdArr.includes($jobId) == false){
-        //     savedJobsIdArr.push($jobId);
-        // }
-        // else {
-        //     let index = savedJobsIdArr.indexOf($jobId);
-        //     if (index > -1){
-        //         savedJobsIdArr.splice(index, 1)
-        //     }
-        // }
+        saveJob($jobId, userId, $jobTitle, companyName)
 
         })
 

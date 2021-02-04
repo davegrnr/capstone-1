@@ -4,13 +4,25 @@
 
 <div id="saved-jobs-list">
     <ul>
+            {% if g.user %}
 
-                {% for job in saved_jobs %}
-                <li>
-                    <p>{{ job.id }}</p>
-                </li>
-                {% endfor %}
+                    {% for job in saved_jobs %}
+                    <li>
+                        <form method="POST" action="/saved-job/{{ job.id }}/delete">
+                            <span><a href="{{ job.url }}">{{ job.job_title }}</a><button class="btn"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    </span>
+                    <span>Company: {{ job.company_name}}</span>
+                <br>
+                        
+
+                    </li>
+                    <br>
+                    {% endfor %}
+
+            {% endif %}
     </ul>
 </div>
 
 {% endblock %}
+'/saved-jobs/<int:saved_job_id>/delete')
