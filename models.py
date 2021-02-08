@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -124,6 +125,12 @@ class SavedJob(db.Model):
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False
+    )
+
+    add_date = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow
     )
 
     user = db.relationship('User')

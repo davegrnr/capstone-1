@@ -54,6 +54,12 @@ body.error-404 {
 	border-radius: 2px;
 }
 
+.remotive-link {
+	border-right: 2px solid #000000;
+	padding: 0 0.5em;
+	color: #007bff;
+}
+
 .nav > li > a > img {
 	width: 32px;
 	border-radius: 32px;
@@ -494,6 +500,10 @@ p.card-bio {
 
 #saved-jobs-list {
 	display: inline;
+}
+
+#page-title {
+	font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 /* ================================ 404 page */

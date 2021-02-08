@@ -1,9 +1,20 @@
 const BASE_URL = "http://127.0.0.1:5000/api";
 
+
 $(async function(){
+    $('.collapse').collapse()
+
     let userId = window.location.pathname.slice(8)
 
-    // async function getSavedJobs()
+    async function getSavedJobs(){
+        const res = await axios.get(`${BASE_URL}/saved-jobs/${userId}`);
+        let jobData = res.data
+        let jobIdArr = jobData.map(x => x.job_id)
+        console.log(jobIdArr)
+        }
+        
+    
+    getSavedJobs();
 
     // Update DOM for saving a job
     $(".star").click(async function(e){
@@ -14,6 +25,7 @@ $(async function(){
         const $closestLi = $tgt.closest("li")
         let titleSpan = $closestLi.find('.job-header')
         let $jobTitle = titleSpan.get(0).id
+        let $jobId = (e.target.closest("li").id)
         let companyNameP = $closestLi.find('.company-name')
         let companyName = companyNameP.get(0).id
 
@@ -21,8 +33,6 @@ $(async function(){
         $tgt.closest("i").toggleClass("far fas")
         $closestLi.toggleClass("not-saved saved")
         
-        // Find Li parent element ID and save Look for status 200
-        let $jobId = (e.target.closest("li").id)
         
 
         async function saveJob($jobId, userId, $jobTitle){

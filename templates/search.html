@@ -41,9 +41,13 @@
               <br>
               <p id="{{ job.company_name }}" class="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
               <br>
-              <p id="job-description"> {{ job.description|safe }}</p>
-              
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-{{ job.id }}"  aria-expanded="false">
+                Job Description
+              </button>
+              <div id="collapse-{{ job.id }}"> {{ job.description|safe }}
+              </div>
             </li>
+          
           {% endfor %}
         </ul>
       </section>

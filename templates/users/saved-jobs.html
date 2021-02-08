@@ -5,24 +5,34 @@
 <div id="saved-jobs-list">
     <ul>
             {% if g.user %}
-
+                {% if saved_jobs|length == 0 %}
+                <h1 class="h1 text-center page-title">You have not saved any jobs yet!</h1>
+                {% else %}
+                <h1 class="h1 text-center page-title">Saved Jobs</h1>
                     {% for job in saved_jobs %}
-                    <li>
-                        <form method="POST" action="/saved-job/{{ job.id }}/delete">
-                            <span><a href="{{ job.url }}">{{ job.job_title }}</a><button class="btn"><i class="fas fa-trash-alt"></i></button>
-                        </form>
-                    </span>
-                    <span>Company: {{ job.company_name}}</span>
-                <br>
-                        
+                    <div class="card text-center">
+                        <div class="card-header">
+                    <div class="card-body">
+                            <form method="POST GET" action="/saved-jobs/{{ job.id }}/delete">
+                                <h5 class="card-title">{{ job.job_title }}</a><button class="btn"><i class="fas fa-trash-alt" style="color:red"></i></button></h5>
+                            </form>
 
-                    </li>
-                    <br>
+                        <p class="card-text">Company: {{ job.company_name }} </p>
+                        <a href="{{ job.url }}" class="btn btn-primary">Apply or learn more!</a>
+                        </div>
+                    </div> 
+                    <div class="card-footer text-muted mb-5">
+                        {{ job.add_date }}
+                    </div> 
+
+
+                    
                     {% endfor %}
-
+                {% endif %}
             {% endif %}
     </ul>
 </div>
 
 {% endblock %}
 '/saved-jobs/<int:saved_job_id>/delete')
+

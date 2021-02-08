@@ -1,7 +1,8 @@
 import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
-from flask_cors import CORS, cross_origin
+# from flask_cors import CORS, cross_origin
+import base64
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
@@ -26,7 +27,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "so secret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-cors = CORS(app)
+# cors = CORS(app)
 
 
 ###############################################################
@@ -196,11 +197,11 @@ def search_jobs(user_id):
         
 
 @app.route('/api/saved-jobs', methods=["POST", "GET", "DELETE"])
-@cross_origin()
-def list_saved_jobs():
+# @cross_origin()
+def saved_jobs():
     exists = db.session.query(db.exists().where(SavedJob.job_id == request.json["saved_job_id"])).scalar() and db.session.query(db.exists().where(SavedJob.user_id == g.user.id)).scalar()
     new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"])
-    
+
 
     if exists == False:
         db.session.add(new_saved_job)
@@ -210,11 +211,29 @@ def list_saved_jobs():
     else:
         saved_job_id=request.json["saved_job_id"]
         saved_job = SavedJob.query.filter_by(job_id=saved_job_id, user_id=g.user.id).first()
-    
         db.session.delete(saved_job)
         db.session.commit()
         return ('', 200)
-        
+
+
+
+@app.route('/api/saved-jobs/<int:user_id>', methods=["GET"])
+def user_saved_jobs(user_id):
+
+    saved_jobs_list = []
+    user = User.query.get_or_404(user_id)
+    user_saved_jobs = SavedJob.query.filter(SavedJob.user_id == user_id).all()
+    
+    if len(user_saved_jobs) > 0:
+        for job in user_saved_jobs:
+            saved_jobs_list.append({
+                "job_id": job.job_id
+            })
+        job_json = json.dumps(saved_jobs_list)
+        return (job_json)
+
+    return(json.dumps(saved_jobs_list))
+    
 
         
     # user_saved_jobs = SavedJob.query.get(g.user.id)
@@ -269,7 +288,7 @@ def edit_user(user_id):
 
     return render_template('/users/edit.html', form=form, user_id=user.id, user=user)
 
-@app.route('/users/<int:user_id>/saved-jobs')
+@app.route('/users/<int:user_id>/saved-jobs', methods=["GET", "POST"])
 def show_saved_jobs(user_id):
 
     saved_jobs = SavedJob.query.filter(SavedJob.user_id == user_id).all()
@@ -279,6 +298,8 @@ def show_saved_jobs(user_id):
 @app.route('/saved-jobs/<int:saved_job_id>/delete')
 def remove_saved_job(saved_job_id):
 
+    job = SavedJob.query.filter_by(id=SavedJob.id).first()
 
-    job = SavedJob.query.get(saved_job_id)
-
+    db.session.delete(job)
+    db.session.commit()
+    return redirect(f"http://127.0.0.1:5000/users/{g.user.id}/saved-jobs")
