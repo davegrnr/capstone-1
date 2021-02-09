@@ -23,7 +23,7 @@ body.error-404 {
 /* ======================= Nav */
 
 .navbar {
-	background-color: #fff;
+	background-image: url("/static/images/lockers.png");
 	height: 46px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 	margin-bottom: 1rem;
@@ -32,13 +32,15 @@ body.error-404 {
 }
 
 .navbar a {
-	color: #66757f;
+	color: #40e64d;
 	font-size: 13px;
 	font-weight: bold;
 }
 
 .navbar a:hover {
-	color: #1c94e0;
+	border: 2px solid #ffffff;
+
+	margin: -3px;
 }
 
 .navbar-brand {

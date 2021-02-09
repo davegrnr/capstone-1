@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
 <div class="row justify-content-md-center">
@@ -16,7 +17,7 @@
           {% endfor %}
           {{ field(placeholder=field.label.text, class="form-control") }}
         {% endfor %}  
-        <button class="btn btn-primary btn-lg btn-block mb-20">Search!</button>
+        <button class="btn btn-primary btn-lg btn-block mb-20" id="search-btn">Search!</button>
       </form>
 
   
@@ -33,7 +34,12 @@
               <span id="{{ job.title }}" class="h4 job-header"> <a href="{{ job.url }}"><b>{{ job.title }}  </b> </span></a>
 
                 <btn class="btn"><i class="far fa-star star" id="star" style="color: #063ae6"></i></btn>
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
 
+                  <div class="toast-body">
+                    Saved!
+                  </div>
+                </div>
               <br>
 
               <span id="job-category" class="h5">{{ job.category }}</span>

@@ -159,7 +159,7 @@ def search_jobs(user_id):
             search = form.data['search_term'].strip()
             category = form.data['category']
             company_name = form.data['company_name'].strip()
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}limit=25").json()
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}&limit=25").json()
             
 
             return render_template('/search.html', form=form, json_data=json_data)
@@ -189,7 +189,7 @@ def search_jobs(user_id):
 
         # Else return all jobs
         else:
-                json_data = requests.get(f"https://remotive.io/api/remote-jobs?limit=25").json()
+                json_data = requests.get(f"https://remotive.io/api/remote-jobs?&limit=25").json()
 
                 return render_template('/search.html', form=form, json_data=json_data)
 
@@ -272,6 +272,7 @@ def edit_user(user_id):
         flash("Access denied.", "danger")
 
     user = g.user
+    print(g.user)
     form = EditUserForm(obj=user)
 
     if form.validate_on_submit():
