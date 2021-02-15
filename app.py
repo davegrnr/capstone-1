@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g, json, jsonify
-# from flask_cors import CORS, cross_origin
 import base64
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
@@ -27,7 +26,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "so secret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-# cors = CORS(app)
 
 
 ###############################################################
@@ -87,6 +85,7 @@ def signup():
     """
 
     form = UserAddForm()
+    
 
     if form.validate_on_submit():
         try:
@@ -122,7 +121,7 @@ def login():
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
-            return redirect("/")
+            return redirect(f"/search/{user.id}")
 
         flash("Invalid credentials.", 'danger')
 
@@ -152,46 +151,83 @@ def search_jobs(user_id):
     user = g.user
     form = SearchJobsForm()
 
-   
-    if form.validate_on_submit():
-         # Check for all fields filled out
-        if form.data['search_term'] and form.data['category'] and form.data['company_name']:
-            search = form.data['search_term'].strip()
-            category = form.data['category']
-            company_name = form.data['company_name'].strip()
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}&limit=25").json()
+        # If category is set to All('') and no other fields filled
+    # if form.data['category'] == '':
+    #     category = form.data['category']
+    #     json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=200").json()
+        
+
+    #     return render_template('/search.html', form=form, json_data=json_data)
             
 
-            return render_template('/search.html', form=form, json_data=json_data)
+        # Check if category set to All('') and company name filled out
+    if form.data['category'] == '' and form.data['company_name']:
+        category = form.data['category']
+        company_name = form.data['company_name'].strip()
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&company_name={company_name}&limit=200").json()
+        
 
-        # Check if only 'search_term' and 'category'
-        elif form.data['search_term'] and form.data['category']:
-            search = form.data['search_term'].strip()
+        return render_template('/search.html', form=form, json_data=json_data)
+        
+
+    # Check if cateogry set to All('') and search term filled in
+    elif form.data['search_term'] and form.data['category'] == '':
+        search = form.data['search_term'].strip()
+        category = form.data['category']
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&limit=200").json()
+        
+
+        return render_template('/search.html', form=form, json_data=json_data)
+        
+
+    # Check category set to All('') and other fields filled out
+    elif form.data['search_term'] and form.data['category'] == '' and form.data['company_name']:
+        search = form.data['search_term'].strip()
+        category = form.data['category']
+        company_name = form.data['company_name'].strip()
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}&limit=200").json()
+        
+
+        return render_template('/search.html', form=form, json_data=json_data)
+
+    # Check if all fields field out
+    elif form.data['search_term'] and form.data['category'] and form.data['company_name']:
+        search = form.data['search_term'].strip()
+        category = form.data['category']
+        company_name = form.data['company_name'].strip()
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&company_name={company_name}&limit=200").json()
+        
+
+        return render_template('/search.html', form=form, json_data=json_data)
+
+    # Check if only 'search_term' and 'category'
+    elif form.data['search_term'] and form.data['category']:
+        search = form.data['search_term'].strip()
+        category = form.data['category']
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&limit=200").json()
+
+        return render_template('/search.html', form=form, json_data=json_data)
+
+    # Check if only 'company_name' and 'category'
+    elif form.data['company_name'] and form.data['category']:
+        company_name= form.data['company_name'].strip()
+        category = form.data['category']
+        json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&company_name={company_name}&limit=200").json()
+
+        return render_template('/search.html', form=form, json_data=json_data)
+
+    # Check if only 'category'
+    elif form.data['category']:
             category = form.data['category']
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&search={search}&limit=25").json()
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=200").json()
 
             return render_template('/search.html', form=form, json_data=json_data)
 
-        # Check if only 'company_name' and 'category'
-        elif form.data['company_name'] and form.data['category']:
-            company_name= form.data['company_name'].strip()
-            category = form.data['category']
-            json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&company_name={company_name}&limit=25").json()
+    # Else return all jobs
+    else:
+            json_data = requests.get(f"https://remotive.io/api/remote-jobs?&limit=200").json()
 
             return render_template('/search.html', form=form, json_data=json_data)
-
-        # Check if only 'category'
-        elif form.data['category']:
-                category = form.data['category']
-                json_data = requests.get(f"https://remotive.io/api/remote-jobs?category={category}&limit=25").json()
-
-                return render_template('/search.html', form=form, json_data=json_data)
-
-        # Else return all jobs
-        else:
-                json_data = requests.get(f"https://remotive.io/api/remote-jobs?&limit=25").json()
-
-                return render_template('/search.html', form=form, json_data=json_data)
 
     return render_template('/search.html', form=form, json_data=json_data)
         
@@ -200,7 +236,7 @@ def search_jobs(user_id):
 # @cross_origin()
 def saved_jobs():
     exists = db.session.query(db.exists().where(SavedJob.job_id == request.json["saved_job_id"])).scalar() and db.session.query(db.exists().where(SavedJob.user_id == g.user.id)).scalar()
-    new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"])
+    new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"], job_url=request.json["job_url"])
 
 
     if exists == False:
@@ -272,7 +308,6 @@ def edit_user(user_id):
         flash("Access denied.", "danger")
 
     user = g.user
-    print(g.user)
     form = EditUserForm(obj=user)
 
     if form.validate_on_submit():
@@ -281,6 +316,7 @@ def edit_user(user_id):
             user.email = form.email.data
             user.location = form.location.data
             user.bio = form.bio.data
+            user.image_url = form.image_url.data
 
             db.session.commit()
             return redirect(f"/users/{user.id}")

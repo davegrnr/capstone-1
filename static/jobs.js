@@ -3,12 +3,23 @@ const BASE_URL = "http://127.0.0.1:5000/api";
 let allJobIds = []
 let jobIdArr = []
 
+function showSnackbar() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
+  }
 
 $(async function(){
     // get user id
     let userId = window.location.pathname.slice(8)
 
     $('.collapse').collapse()
+
     
     // populate array of all job ids from DOM
     async function getAllJobIds(){
@@ -47,20 +58,26 @@ $(async function(){
         let $jobId = (e.target.closest("li").id)
         let companyNameP = $closestLi.find('.company-name')
         let companyName = companyNameP.get(0).id
+        let jobUrl = $closestLi.find('#job-url').html()
 
-        // Toggle saved job star icon
+
         $tgt.closest("i").toggleClass("far fas")
+        
         if ($tgt.closest("i").hasClass('fas') === true){
-            $('.toast').toast('show')}
+            // $('.toast').toast('show')}
+            showSnackbar();
+        }
 
         $closestLi.toggleClass("not-saved saved")
         
         // send saved job data to API
         async function saveJob($jobId, userId, $jobTitle){
-            const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName});
-
+            const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName, job_url: jobUrl});
 
         }
+
+
+        
 
         saveJob($jobId, userId, $jobTitle, companyName)
         })

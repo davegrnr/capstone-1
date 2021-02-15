@@ -2,17 +2,19 @@
 
 {% block content %}
 
-<div class="card align-items-center">
+<div class="align-items-center" id="user-info" style="background-image: url({{ g.user.image_url }})">
 
     <h1>{{ g.user.username }}</h1>
 
         <h3>Email: {{ g.user.email }}</h3>
         <h3>Location: {{ g.user.location }}</h3>
-        <h3>Bio: {{ g.user.bio }}</h3>
+        <h3>Bio</h3>
+        <p> {{ g.user.bio }} </p>
 
-
+    <a href="/users/{{ g.user.id }}/saved-jobs" class="btn btn-primary mb-2">Saved Jobs</a>
+    <br>
     <a href="/users/{{ g.user.id }}/edit" class="btn btn-primary mb-2">Edit Info</a>
-    <a href="/users/{{ g.user.id }}/saved-jobs" class="btn btn-primary mb-2">My Saved Jobs</a>
+    
 </div>
 
 

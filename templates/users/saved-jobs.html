@@ -2,31 +2,34 @@
 
 {% block content %}
 
-<div id="saved-jobs-list">
+<div id="saved-jobs-list mt-4">
     <ul>
             {% if g.user %}
                 {% if saved_jobs|length == 0 %}
-                <h1 class="h1 text-center page-title">You have not saved any jobs yet!</h1>
+                <h1 class="h1 text-center page-title job-font pt-4">You have not saved any jobs yet!</h1>
+                <hr>
                 {% else %}
-                <h1 class="h1 text-center page-title">Saved Jobs</h1>
+                <h1 class="h1 text-center page-title yellow-theme job-font pt-4">SAVED JOBS</h1>
+                <hr>
                     {% for job in saved_jobs %}
-                    <div class="card text-center">
-                        <div class="card-header">
+                    <li>
+                    <div class="saved-job mb-4 border border-1 border-secondary rounded">
+
                     <div class="card-body">
                             <form method="POST GET" action="/saved-jobs/{{ job.id }}/delete">
                                 <h5 class="card-title">{{ job.job_title }}</a><button class="btn"><i class="fas fa-trash-alt" style="color:red"></i></button></h5>
                             </form>
 
                         <p class="card-text">Company: {{ job.company_name }} </p>
-                        <a href="{{ job.url }}" class="btn btn-primary">Apply or learn more!</a>
-                        </div>
+                        <a target="_blank" href="{{ job.job_url }}" class="btn btn-primary">Apply or learn more!</a>
+
                     </div> 
-                    <div class="card-footer text-muted mb-5">
+                    <span class="text-muted ml-4">
                         <span>Added {{ job.add_date }}</span>
-                    </div> 
-
-
+                    </span> 
                     
+                    </li>
+                    <hr class="job-hr">
                     {% endfor %}
                 {% endif %}
             {% endif %}
@@ -34,5 +37,5 @@
 </div>
 
 {% endblock %}
-'/saved-jobs/<int:saved_job_id>/delete')
+
 

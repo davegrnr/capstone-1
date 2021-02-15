@@ -34,11 +34,6 @@ class User(db.Model):
         default="/static/images/default-pic.png",
     )
 
-    header_image_url = db.Column(
-        db.Text,
-        default="/static/images/lockers.png"
-    )
-
     bio = db.Column(
         db.Text,
 
@@ -132,6 +127,12 @@ class SavedJob(db.Model):
         nullable=False,
         default=datetime.utcnow
     )
+
+    job_url = db.Column(
+        db.Text
+    )
+
+
 
     user = db.relationship('User')
 

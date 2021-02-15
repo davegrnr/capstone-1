@@ -3,11 +3,12 @@
 {% block content %}
 
 <div class="row justify-content-md-center">
+ 
+  
     <div class="col-md-7 col-lg-5">
-      <h2 class="h2">Search for Jobs</h2>
+      <div id="snackbar">Job Saved!</div>
+      <h1 class="h1 job-search-header mt-4 mb-4 job-font">SEARCH FOR JOBS</h2>
       <form method="POST" id="job_search_form">
-        
-        <!-- *********LIST INFO FOR  -->
         
         {{ form.hidden_tag() }}
   
@@ -25,33 +26,44 @@
     </div>
   </div>
 <div class="row">
-  <div class="column mt-2" id="search-results">
+  <div class="column mt-2 bg" id="search-results">
     <div class="row">
       <section class="jobs-container">
         <ul>
           {% for job in json_data.jobs %}
             <li class="list-group-item jobs-list not-saved" id="{{ job.id }}">
               <span id="{{ job.title }}" class="h4 job-header"> <a href="{{ job.url }}"><b>{{ job.title }}  </b> </span></a>
+              <span type="hidden" id="job-url">{{ job.url }}</span> 
+      
 
                 <btn class="btn"><i class="far fa-star star" id="star" style="color: #063ae6"></i></btn>
-                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <!-- <span class="toast" role="alert" data-delay="1000" aria-live="assertive" aria-atomic="false" data-target="{{ job.id }}" style="display:inline">
 
-                  <div class="toast-body">
+                  <span class="toast-body" style="display:inline">
                     Saved!
+                  </span> -->
+                </span>
+              <br>
+
+                <span id="job-category" class="h5">{{ job.category }}</span>
+                <span id="location-text">{{ job.candidate_required_location }}</span> 
+              <br>
+                <p id="{{ job.company_name }}" class="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
+              <br>
+              <div id="accordion">
+                <div class="card">
+                  <div class="card-header" id="heading{{ job.id}}">
+                      <button class="accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ job.id }}" aria-controls="collapse" aria-expanded="false">
+                        Job Description
+                      </button>
+                        <div id="collapse{{ job.id }}" class="collapse" aria-labelledby="heading{{ job.id }}" data-parent="#accordion"> 
+                      <div class="card-body"> {{ job.description|safe }}
+                    </div>
                   </div>
                 </div>
-              <br>
-
-              <span id="job-category" class="h5">{{ job.category }}</span>
-              <span id="location-text">{{ job.candidate_required_location }}</span> 
-              <br>
-              <p id="{{ job.company_name }}" class="company-name"><strong>Company: </strong>{{ job.company_name }}</p>
-              <br>
-              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-{{ job.id }}"  aria-expanded="false">
-                Job Description
-              </button>
-              <div id="collapse-{{ job.id }}"> {{ job.description|safe }}
               </div>
+            </div>
+            </li>
             </li>
           
           {% endfor %}
@@ -59,6 +71,7 @@
       </section>
     </div>
   </div>
+
 </div>
 
   {% endblock %}
