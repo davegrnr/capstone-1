@@ -12,12 +12,11 @@ from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
-port = int(os.environ.get('PORT', 5000))
 
 # Get DB_URI from environ variable or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgres:///job_locker'))
+app.config['SQLALCHEMY_DATABASE_URI'] = 
+    os.environ.get('DATABASE_URL', 'postgres:///job_locker')
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
