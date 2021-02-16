@@ -1,4 +1,4 @@
-const BASE_URL = "https://job-locker.herokuapp.com/api";
+const BASE_URL = "https://job-locker.herokuapp.com/api"
 
 let allJobIds = []
 let jobIdArr = []

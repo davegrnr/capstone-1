@@ -233,7 +233,7 @@ def search_jobs(user_id):
         
 
 @app.route('/api/saved-jobs', methods=["POST", "GET", "DELETE"])
-# @cross_origin()
+@cross_origin()
 def saved_jobs():
     exists = db.session.query(db.exists().where(SavedJob.job_id == request.json["saved_job_id"])).scalar() and db.session.query(db.exists().where(SavedJob.user_id == g.user.id)).scalar()
     new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"], job_url=request.json["job_url"])
