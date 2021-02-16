@@ -5,7 +5,6 @@ import base64
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
-from flask_cors import CORS, cross_origin
 
 from models import db, connect_db, User, SavedJob
 from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
@@ -233,8 +232,7 @@ def search_jobs(user_id):
     return render_template('/search.html', form=form, json_data=json_data)
         
 
-@app.route('https://job-locker.herokuapp.com/api/saved-jobs', methods=["POST", "GET", "DELETE"])
-@cross_origin()
+@app.route('/api/saved-jobs', methods=["POST", "GET", "DELETE"])
 def saved_jobs():
     exists = db.session.query(db.exists().where(SavedJob.job_id == request.json["saved_job_id"])).scalar() and db.session.query(db.exists().where(SavedJob.user_id == g.user.id)).scalar()
     new_saved_job = SavedJob(job_id=request.json["saved_job_id"], user_id=request.json["user_id"], job_title=request.json["job_title"], company_name=request.json["company_name"], job_url=request.json["job_url"])
@@ -254,7 +252,7 @@ def saved_jobs():
 
 
 
-@app.route('https://job-locker.herokuapp.com/api/saved-jobs/<int:user_id>', methods=["GET"])
+@app.route('/api/saved-jobs/<int:user_id>', methods=["GET"])
 def user_saved_jobs(user_id):
 
     saved_jobs_list = []
