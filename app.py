@@ -339,4 +339,4 @@ def remove_saved_job(saved_job_id):
 
     db.session.delete(job)
     db.session.commit()
-    return redirect(f"http://127.0.0.1:5000/users/{g.user.id}/saved-jobs")
+    return redirect(f"https://job-locker.herokuapp.com/users/{g.user.id}/saved-jobs")
