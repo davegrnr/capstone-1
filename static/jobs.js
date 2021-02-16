@@ -32,6 +32,7 @@ $(async function(){
     // populate array of saved job ids from API
     async function getSavedJobs(){
         const res = await axios.get(`https://job-locker.herokuapp.com/api/saved-jobs/${userId}`);
+        res.catch(err => console.log(err))
         let jobData = res.data
         let jobIdArr = jobData.map(x => x.job_id)
 

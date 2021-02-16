@@ -12,6 +12,7 @@ from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
+port = int(os.environ.get('PORT', 5000))
 
 # Get DB_URI from environ variable or,
 # if not set there, use development local db.
