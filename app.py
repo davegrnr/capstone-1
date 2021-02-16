@@ -5,6 +5,7 @@ import base64
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests
+from flask_cors import CORS, cross_origin
 
 from models import db, connect_db, User, SavedJob
 from forms import UserAddForm, LoginForm , EditUserForm, SearchJobsForm
