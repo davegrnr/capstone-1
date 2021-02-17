@@ -31,7 +31,7 @@ $(async function(){
     
     // populate array of saved job ids from API
     async function getSavedJobs(){
-        const res = await axios.get(`${BASE_URL}/saved-jobs/${userId}`);
+        const res = await axios.get(`https://job-locker.herokuapp.com/api/saved-jobs/${userId}`);
         let jobData = res.data
         let jobIdArr = jobData.map(x => x.job_id)
 
@@ -72,7 +72,7 @@ $(async function(){
         
         // send saved job data to API
         async function saveJob($jobId, userId, $jobTitle, companyName, jobUrl){
-            const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName, job_url: jobUrl});
+            const res = await axios.post('https://job-locker.herokuapp.com/api/saved-jobs', {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName, job_url: jobUrl});
 
         }
 
