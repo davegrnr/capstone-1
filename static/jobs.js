@@ -71,7 +71,7 @@ $(async function(){
         $closestLi.toggleClass("not-saved saved")
         
         // send saved job data to API
-        async function saveJob($jobId, userId, $jobTitle){
+        async function saveJob($jobId, userId, $jobTitle, companyName, jobUrl){
             const res = await axios.post(`${BASE_URL}/saved-jobs`, {saved_job_id: $jobId, user_id: userId, job_title: $jobTitle, company_name: companyName, job_url: jobUrl});
 
         }
@@ -79,7 +79,7 @@ $(async function(){
 
         
 
-        saveJob($jobId, userId, $jobTitle, companyName)
+        saveJob($jobId, userId, $jobTitle, companyName, jobUrl)
         })
         getAllJobIds()
 
