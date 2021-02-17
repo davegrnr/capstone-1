@@ -243,6 +243,10 @@ hr.job-hr {
 	height: 1px;
 }
 
+.saved-job {
+	background-color: #fffdd0;
+}
+
 .add-date {
 	position: relative;
 }
